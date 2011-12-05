@@ -50,15 +50,29 @@ public class CalcEngine {
 	/**
 	 * @return The RPN for the inserted expression
 	 */
-	public String getRPN() {
-		Postfix converter = new Postfix();
-		String postfix = "";
+	public String getRPN(String ifx) {
+		Postfix p = new Postfix();
+		String s = "";
 		try {
-			postfix += converter.infixToPostfix(leftOperand + "" + lastOperator + displayValue);
+			s = p.infixToPostfix(ifx);
 		} catch (BadFormatException e) {
 			e.printStackTrace();
 		}
-		return postfix;
+		return s;
+	}
+	
+	public String postfixEvaluation(String pfx) {
+		Postfix p = new Postfix();
+		Integer s = null;
+		
+		try {
+			s = p.evaluate(pfx);
+			System.out.println(s.toString());
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+		return s.toString();
 	}
 	
 	/**
@@ -111,6 +125,10 @@ public class CalcEngine {
 	 */
 	public void divide() {
 		applyOperator('/');
+	}
+	
+	public void exp() {
+		applyOperator('^');
 	}
 
 	/**
@@ -183,6 +201,11 @@ public class CalcEngine {
 			break;
 		case '/':
 			displayValue = leftOperand / displayValue;
+			haveLeftOperand = true;
+			leftOperand = displayValue;
+			break;
+		case '^':
+			displayValue = (int)(Math.pow(displayValue, leftOperand));
 			haveLeftOperand = true;
 			leftOperand = displayValue;
 			break;

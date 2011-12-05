@@ -82,6 +82,7 @@ public class UserInterface implements ActionListener {
 		addButton(buttonPanel, "+");
 		addButton(buttonPanel, "-");
 		addButton(buttonPanel, "=");
+		addButton(buttonPanel, "^");
 
 		hexPanel = new JPanel(new GridLayout(6, 1));
 		addButton(hexPanel, "A");
@@ -159,6 +160,7 @@ public class UserInterface implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent event) {
 		String command = event.getActionCommand();
+		boolean postfixEvaluation = false;
 
 		if (command.equals("0") || command.equals("1") || command.equals("2")
 				|| command.equals("3") || command.equals("4")
@@ -177,8 +179,18 @@ public class UserInterface implements ActionListener {
 		} else if (command.equals("-")) {
 			calc.minus();
 		} else if (command.equals("=")) {
-			postfixDisplay.setText(calc.getRPN());
+			String s = display.getText();
+			if(s.contains("+") || s.contains("-") || s.contains("*") || s.contains("/") || s.contains("^")) {
+			postfixEvaluation = true;
+			String pfxStatement = calc.getRPN(s);
+			postfixDisplay.setText(pfxStatement);
+			String ifxSolution = calc.postfixEvaluation(pfxStatement);
+			System.out.println(ifxSolution);
+			display.setText(ifxSolution);
+			}
+			else {
 			calc.equals();
+			}
 		} else if (command.equals("CE")) {
 			postfixDisplay.setText("");
 			calc.clear();
@@ -187,9 +199,13 @@ public class UserInterface implements ActionListener {
 		} else if (command.equals("/")) {
 			calc.divide();
 		}
+		else if (command.equals("^")) {
+			calc.exp();
+		}
 		// else unknown command.
-
+		if(!postfixEvaluation) {
 		redisplay();
+		}
 	}
 
 	/**
